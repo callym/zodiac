@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["Callym <hi@callym.com>"]
 
 [dependencies]
+chrono = "0.4.0"
+vsop87 = "2.0.3"
