@@ -1,0 +1,6 @@
+[package]
+name = "zodiac"
+version = "0.1.0"
+authors = ["Callym <hi@callym.com>"]
+
+[dependencies]
