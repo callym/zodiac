@@ -1,7 +1,9 @@
+use chrono::Datelike;
 use vsop87::{ vsop87c, RectangularCoordinates };
 
-use ::{ Coordinates, JulianDay };
+use ::{ Coordinates, JulianDay, Sign };
 
+#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub enum Planet {
 	Sun,
 	Moon,
@@ -16,6 +18,26 @@ pub enum Planet {
 }
 
 impl Planet {
+	pub fn emoji(&self) -> &'static str {
+		match *self {
+			Planet::Sun => "☉",
+			Planet::Moon => "☽",
+			Planet::Mercury => "☿",
+			Planet::Venus => "♀",
+			Planet::Mars => "♂",
+			Planet::Jupiter => "♃",
+			Planet::Saturn => "♄",
+			Planet::Uranus => "⛢",
+			Planet::Neptune => "♆",
+			Planet::Pluto => "♇",
+		}
+	}
+
+	pub fn get_sign<T>(&self, date: T) -> Sign where T: Datelike {
+		let coordinates = self.coordinates(date.into());
+		Sign::from_coordinates(&coordinates)
+	}
+
 	pub fn coordinates(&self, julian_day: JulianDay) -> Coordinates {
 		let earth = vsop87c::earth(julian_day.into());
 		let planet = match *self {

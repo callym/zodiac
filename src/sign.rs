@@ -1,6 +1,6 @@
 use ::Coordinates;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub enum Sign {
 	Aries,
 	Taurus,
@@ -17,6 +17,23 @@ pub enum Sign {
 }
 
 impl Sign {
+	pub fn emoji(&self) -> &'static str {
+		match *self {
+			Sign::Aries => "♈",
+			Sign::Taurus => "♉",
+			Sign::Gemini => "♊",
+			Sign::Cancer => "♋",
+			Sign::Leo => "♌",
+			Sign::Virgo => "♍",
+			Sign::Libra => "♎",
+			Sign::Scorpio => "♏",
+			Sign::Sagittarius => "♐",
+			Sign::Capricorn => "♑",
+			Sign::Aquarius => "♒",
+			Sign::Pisces => "♓",
+		}
+	}
+
 	pub fn from_coordinates(coord: &Coordinates) -> Self {
 		match coord.lon as u32 {
 			0 ... 30 => Sign::Aries,

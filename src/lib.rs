@@ -1,5 +1,7 @@
 extern crate chrono;
 extern crate vsop87;
+extern crate serde;
+#[macro_use] extern crate serde_derive;
 
 mod coordinates;
 pub use coordinates::Coordinates;

@@ -1,21 +1,14 @@
-use chrono::{ Datelike, Date, DateTime, FixedOffset };
+use chrono::Datelike;
 
 #[derive(Copy, Clone, Debug)]
 pub struct JulianDay(f64);
 
-impl From<Date<FixedOffset>> for JulianDay {
-	fn from(date: Date<FixedOffset>) -> Self {
-		let datetime = date.and_hms(0, 0, 0);
-		datetime.into()
-	}
-}
-
-impl From<DateTime<FixedOffset>> for JulianDay {
-	fn from(datetime: DateTime<FixedOffset>) -> Self {
+impl<T> From<T> for JulianDay where T: Datelike {
+	fn from(date: T) -> Self {
 		let (year, month, day) = {
-			let mut year = datetime.year();
-			let mut month = datetime.month();
-			let day = datetime.day();
+			let mut year = date.year();
+			let mut month = date.month();
+			let day = date.day();
 
 			if month == 1 || month == 2 {
 				year -= 1;
