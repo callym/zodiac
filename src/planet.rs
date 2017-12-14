@@ -1,9 +1,8 @@
-use chrono::Datelike;
 use vsop87::{ vsop87c, RectangularCoordinates };
 
-use ::{ Coordinates, JulianDay, Sign };
+use ::{ Coordinates, JulianDay, Placement, Sign };
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Planet {
 	Sun,
 	Moon,
@@ -33,12 +32,18 @@ impl Planet {
 		}
 	}
 
-	pub fn get_sign<T>(&self, date: T) -> Sign where T: Datelike {
+	pub fn get_sign<T>(&self, date: T) -> Sign where T: Into<JulianDay> {
 		let coordinates = self.coordinates(date.into());
 		Sign::from_coordinates(&coordinates)
 	}
 
-	pub fn coordinates(&self, julian_day: JulianDay) -> Coordinates {
+	pub fn get_placement<T>(&self, date: T) -> Placement where T: Into<JulianDay> + Clone {
+		Placement::new(*self, date)
+	}
+
+	pub fn coordinates<T>(&self, date: T) -> Coordinates where T: Into<JulianDay> {
+		let julian_day: JulianDay = date.into();
+
 		let earth = vsop87c::earth(julian_day.into());
 		let planet = match *self {
 			Planet::Sun => RectangularCoordinates { x: 0.0, y: 0.0, z: 0.0 },
