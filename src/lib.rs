@@ -1,3 +1,5 @@
+#![feature(specialization)]
+
 extern crate chrono;
 extern crate vsop87;
 extern crate serde;
