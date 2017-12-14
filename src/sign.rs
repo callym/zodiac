@@ -36,18 +36,18 @@ impl Sign {
 
 	pub fn from_coordinates(coord: &Coordinates) -> Self {
 		match coord.lon as u32 {
-			0 ... 30 => Sign::Aries,
-			31 ... 60 => Sign::Taurus,
-			61 ... 90 => Sign::Gemini,
-			91 ... 120 => Sign::Cancer,
-			121 ... 150 => Sign::Leo,
-			151 ... 180 => Sign::Virgo,
-			181 ... 210 => Sign::Libra,
-			211 ... 240 => Sign::Scorpio,
-			241 ... 270 => Sign::Sagittarius,
-			271 ... 300 => Sign::Capricorn,
-			301 ... 330 => Sign::Aquarius,
-			331 ... 360 => Sign::Pisces,
+			0 ... 29 => Sign::Aries,
+			30 ... 59 => Sign::Taurus,
+			60 ... 89 => Sign::Gemini,
+			90 ... 119 => Sign::Cancer,
+			120 ... 149 => Sign::Leo,
+			150 ... 179 => Sign::Virgo,
+			180 ... 209 => Sign::Libra,
+			210 ... 239 => Sign::Scorpio,
+			240 ... 269 => Sign::Sagittarius,
+			270 ... 299 => Sign::Capricorn,
+			300 ... 329 => Sign::Aquarius,
+			330 ... 359 => Sign::Pisces,
 			_ => panic!(),
 		}
 	}
