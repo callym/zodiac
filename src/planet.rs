@@ -47,7 +47,7 @@ impl Planet {
 		let earth = vsop87c::earth(julian_day.into());
 		let planet = match *self {
 			Planet::Sun => RectangularCoordinates { x: 0.0, y: 0.0, z: 0.0 },
-			Planet::Moon => moon(julian_day.into()),
+			Planet::Moon => return moon(julian_day.into()).into(),
 			Planet::Mercury => vsop87c::mercury(julian_day.into()),
 			Planet::Venus => vsop87c::venus(julian_day.into()),
 			Planet::Mars => vsop87c::mars(julian_day.into()),
@@ -73,17 +73,44 @@ impl Planet {
 fn moon(julian_day: f64) -> RectangularCoordinates {
 	let julian_day = julian_day - 2451543.5;
 
+	fn range(n: f64) -> f64 {
+		let mut n = n;
+
+		if n > 0.0 && n < 360.0 {
+			return n;
+		}
+
+		if n < 0.0 {
+			while n < 0.0 {
+				n += 360.0;
+			}
+			return n;
+		}
+
+		if n > 360.0 {
+			while n > 360.0 {
+				n -= 360.0;
+			}
+			return n;
+		}
+
+		n
+	}
+
 	// Sun constants
 	// mean longitude
 	let Ls = (282.9404 + 4.70935_e-5 * julian_day) + (356.0470 + 0.9856002585 * julian_day);
 	// mean anomaly
 	let Ms = 356.0470 + 0.9856002585 * julian_day;
 
+	let Ls = range(Ls);
+	let Ms = range(Ms);
+
 	// Moon constants
 	// long asc. node
 	let N = 125.1228 - 0.0529538083 * julian_day;
 	// inclination
-	let i: f64 = 5.1354;
+	let i: f64 = 5.1454;
 	// arg. of perigee
 	let w = 318.0634 + 0.1643573223  * julian_day;
 	// mean distance
@@ -93,19 +120,19 @@ fn moon(julian_day: f64) -> RectangularCoordinates {
 	// mean anomaly
 	let Mm = 115.3654 + 13.0649929509 * julian_day;
 	// mean longitude
-	let Lm = N + w + Mm;
+	let Lm = range(N) + range(w) + range(Mm);
 	// mean elongation
-	let D = Lm - Ls;
+	let D = range(Lm) - range(Ls);
 	// argument of latitude
-	let F = Lm - N;
+	let F = range(Lm) - range(N);
 
-	let Ms: f64 = Ms.to_radians();
-	let N: f64 = N.to_radians();
-	let i: f64 = i.to_radians();
-	let w: f64 = w.to_radians();
-	let Mm: f64 = Mm.to_radians();
-	let D: f64 = D.to_radians();
-	let F: f64 = F.to_radians();
+	let Ms: f64 = range(Ms).to_radians();
+	let N: f64 = range(N).to_radians();
+	let i: f64 = range(i).to_radians();
+	let w: f64 = range(w).to_radians();
+	let Mm: f64 = range(Mm).to_radians();
+	let D: f64 = range(D).to_radians();
+	let F: f64 = range(F).to_radians();
 
 	// pertubations in longitude
 	let Plon: f64 =   (-1.274 as f64).to_radians() * (Mm - 2.0 * D).sin()
@@ -129,8 +156,8 @@ fn moon(julian_day: f64) -> RectangularCoordinates {
 					+ (0.017 as f64).to_radians() * (2.0 * Mm + F).sin();
 
 	// pertubations in lunar distance
-	let Pdist: f64 =  (-0.58 as f64).to_radians() * (Mm - 2.0 * D).cos()
-					+ (-0.46 as f64).to_radians() * (2.0 * D).cos();
+	let Pdist: f64 =  (-0.58 as f64) * (Mm - (2.0 * D)).cos()
+					+ (-0.46 as f64) * (2.0 * D).cos();
 
 	// eccentric anomaly
 	let mut E0 = Mm + (1.0 as f64) * e * Mm.sin() * (1.0 + e + Mm.cos());
@@ -146,16 +173,24 @@ fn moon(julian_day: f64) -> RectangularCoordinates {
 
 	let r = (x.powi(2) + y.powi(2)).sqrt();
 	let v = y.atan2(x);
+	let v = range(v.to_degrees()).to_radians();
 
 	let x = r * (N.cos() * (v + w).cos() - N.sin() * (v + w).sin() * i.cos());
 	let y = r * (N.sin() * (v + w).cos() + N.cos() * (v + w).sin() * i.cos());
 	let z = r * (v + w).sin() * i.sin();
 
-	let rc = RectangularCoordinates { x, y, z };
+	let rc = RectangularCoordinates {
+		x: x,
+		y: y,
+		z: z,
+	};
+
 	let mut coord: Coordinates = rc.into();
+	println!("{:?}", Pdist);
 	coord.lon += Plon.to_degrees();
 	coord.lat += Plat.to_degrees();
-	coord.dist += Pdist.to_degrees();
+	coord.dist += Pdist;
+	coord.dist *= 4.2587504555972E-5;
 
 	coord.into()
 }
