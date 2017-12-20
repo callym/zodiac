@@ -3,6 +3,12 @@ use chrono::{ Datelike, Timelike };
 #[derive(Copy, Clone, Debug)]
 pub struct JulianDay(f64);
 
+impl JulianDay {
+	pub fn raw(raw: f64) -> Self {
+		JulianDay(raw)
+	}
+}
+
 fn jd<T: Datelike>(date: &T) -> f64 {
 	let (year, month, day) = {
 		let mut year = date.year();

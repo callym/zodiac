@@ -6,6 +6,7 @@ pub struct Placement {
 	pub degrees: Degrees,
 	pub planet: Planet,
 	pub sign: Sign,
+	pub retrograde: bool,
 }
 
 impl Placement {
@@ -13,12 +14,21 @@ impl Placement {
 		let coord = planet.coordinates(date.clone());
 		let sign = planet.get_sign(date.clone());
 
+		let retrograde = {
+			let jd: JulianDay = date.into();
+			let raw: f64 = jd.into();
+			let offset = (1.0 * 60.0) / (60.0 * 60.0 * 24.0);
+			let coord_2 = planet.coordinates(JulianDay::raw(raw + offset));
+			coord.lon - coord_2.lon > 0.0
+		};
+
 		let lon = coord.lon - sign.range().start as f64;
 
 		Self {
 			degrees: Degrees::new(lon),
 			planet: planet,
 			sign: sign,
+			retrograde: retrograde,
 		}
 	}
 }

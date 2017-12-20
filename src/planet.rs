@@ -186,7 +186,6 @@ fn moon(julian_day: f64) -> RectangularCoordinates {
 	};
 
 	let mut coord: Coordinates = rc.into();
-	println!("{:?}", Pdist);
 	coord.lon += Plon.to_degrees();
 	coord.lat += Plat.to_degrees();
 	coord.dist += Pdist;
