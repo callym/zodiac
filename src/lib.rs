@@ -1,9 +1,4 @@
-#![feature(specialization, range_contains, conservative_impl_trait)]
-
-extern crate chrono;
-extern crate vsop87;
-extern crate serde;
-#[macro_use] extern crate serde_derive;
+#![feature(specialization)]
 
 mod chart;
 pub use chart::Chart;

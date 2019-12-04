@@ -1,6 +1,7 @@
 use vsop87::{ vsop87c, RectangularCoordinates };
+use serde::{ Serialize, Deserialize };
 
-use ::{ Coordinates, JulianDay, Placement, Sign };
+use crate::{ Coordinates, JulianDay, Placement, Sign };
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Planet {

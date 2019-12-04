@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use ::{ JulianDay, Planet, Placement, Sign };
-use ::Planet::*;
+use crate::{ JulianDay, Planet, Placement, Sign };
+use crate::Planet::*;
 
 #[derive(Debug, Clone)]
 pub struct Chart {

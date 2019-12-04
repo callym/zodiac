@@ -1,5 +1,6 @@
-use std::hash::{ Hash, Hasher };
-use ::{ Degrees, JulianDay, Planet, Sign };
+use serde::{ Serialize, Deserialize };
+
+use crate::{ Degrees, JulianDay, Planet, Sign };
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub struct Placement {
@@ -31,16 +32,4 @@ impl Placement {
 			retrograde: retrograde,
 		}
 	}
-}
-
-impl Hash for Placement {
-    fn hash<H>(&self, state: &mut H) where H: Hasher {
-        (&self.planet, &self.sign).hash(state);
-    }
-}
-
-impl PartialEq for Placement {
-    fn eq(&self, other: &Self) -> bool {
-        (&self.planet, &self.sign) == (&other.planet, &other.sign)
-    }
 }

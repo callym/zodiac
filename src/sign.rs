@@ -1,5 +1,7 @@
 use std::ops::Range;
-use ::Coordinates;
+use serde::{ Serialize, Deserialize };
+
+use crate::Coordinates;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum Sign {
@@ -53,7 +55,7 @@ impl Sign {
 	}
 
 	pub fn from_coordinates(coord: &Coordinates) -> Self {
-		match coord.lon as u32 {
+		match &(coord.lon as u32) {
 			i if Sign::Aries.range().contains(i) => Sign::Aries,
 			i if Sign::Taurus.range().contains(i) => Sign::Taurus,
 			i if Sign::Gemini.range().contains(i) => Sign::Gemini,

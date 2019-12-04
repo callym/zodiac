@@ -1,4 +1,5 @@
 use std::fmt;
+use serde::{ Serialize, Deserialize };
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub struct Degrees(f64);
